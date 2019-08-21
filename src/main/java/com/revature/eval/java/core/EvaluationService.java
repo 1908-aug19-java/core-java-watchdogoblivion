@@ -85,18 +85,15 @@ public class EvaluationService {
 		}
 
 		public boolean isEquilateral() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			return sideOne == sideTwo & sideTwo == sideThree;
 		}
 
 		public boolean isIsosceles() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			return sideOne == sideTwo || sideOne== sideThree || sideTwo == sideThree;
 		}
 
 		public boolean isScalene() {
-			// TODO Write an implementation for this method declaration
-			return false;
+			return sideOne != sideTwo && sideOne != sideThree && sideTwo != sideThree;
 		}
 
 	}
