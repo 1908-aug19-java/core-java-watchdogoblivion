@@ -54,37 +54,37 @@ public class EvaluationServiceTest {
 		assertEquals("racecar", evaluationService.reverse("racecar"));
 	}
 
-//	/*******************************************************************
-//	 * Question 2
-//	 ******************************************************************/
-//	@Test
-//	public void basic() {
-//		final String phrase = "Portable Network Graphics";
-//		final String expected = "PNG";
-//		assertEquals(expected, evaluationService.acronym(phrase));
-//	}
-//
-//	@Test
-//	public void punctuation() {
-//		final String phrase = "First In, First Out";
-//		final String expected = "FIFO";
-//		assertEquals(expected, evaluationService.acronym(phrase));
-//	}
-//
-//	@Test
-//	public void NonAcronymAllCapsWord() {
-//		final String phrase = "GNU Image Manipulation Program";
-//		final String expected = "GIMP";
-//		assertEquals(expected, evaluationService.acronym(phrase));
-//	}
-//
-//	@Test
-//	public void punctuationWithoutWhitespace() {
-//		final String phrase = "Complementary metal-oxide semiconductor";
-//		final String expected = "CMOS";
-//		assertEquals(expected, evaluationService.acronym(phrase));
-//	}
-//
+	/*******************************************************************
+	 * Question 2
+	 ******************************************************************/
+	@Test
+	public void basic() {
+		final String phrase = "Portable Network Graphics";
+		final String expected = "PNG";
+		assertEquals(expected, evaluationService.acronym(phrase));
+	}
+
+	@Test
+	public void punctuation() {
+		final String phrase = "First In, First Out";
+		final String expected = "FIFO";
+		assertEquals(expected, evaluationService.acronym(phrase));
+	}
+
+	@Test
+	public void NonAcronymAllCapsWord() {
+		final String phrase = "GNU Image Manipulation Program";
+		final String expected = "GIMP";
+		assertEquals(expected, evaluationService.acronym(phrase));
+	}
+
+	@Test
+	public void punctuationWithoutWhitespace() {
+		final String phrase = "Complementary metal-oxide semiconductor";
+		final String expected = "CMOS";
+		assertEquals(expected, evaluationService.acronym(phrase));
+	}
+
 //	/*******************************************************************
 //	 * Question 3
 //	 ******************************************************************/
