@@ -1,6 +1,8 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +16,11 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String reverse(String string) {
-		String [] strings = string.split("");
+		String[] strings = string.split("");
 		String reversed = "";
-		for(int i = strings.length - 1; i >= 0; i--) {reversed+=strings[i];}
+		for (int i = strings.length - 1; i >= 0; i--) {
+			reversed += strings[i];
+		}
 		return reversed;
 	}
 
@@ -29,9 +33,11 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String acronym(String phrase) {
-		String [] strings = phrase.split(" |-");
+		String[] strings = phrase.split(" |-");
 		String acronym = "";
-		for(int i = 0; i < strings.length; i++) {acronym+=strings[i].substring(0,1).toUpperCase();}
+		for (int i = 0; i < strings.length; i++) {
+			acronym += strings[i].substring(0, 1).toUpperCase();
+		}
 		return acronym;
 	}
 
@@ -89,7 +95,7 @@ public class EvaluationService {
 		}
 
 		public boolean isIsosceles() {
-			return sideOne == sideTwo || sideOne== sideThree || sideTwo == sideThree;
+			return sideOne == sideTwo || sideOne == sideThree || sideTwo == sideThree;
 		}
 
 		public boolean isScalene() {
@@ -114,8 +120,49 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int getScrabbleScore(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		String[] strings = string.split("");
+		Map<String, Integer> scrabble = new HashMap<String, Integer>();
+		setValues(scrabble);
+		int score = 0;
+		for (String s : strings) {
+			if(scrabble.get(s.toUpperCase()) != null) {score+=scrabble.get(s.toUpperCase());}
+		}
+		return score;
+	}
+
+	// I created a separate method in case scores needed to change
+	private void setValues(Map<String, Integer> scrabble) {
+		String[] ones = { "A", "E", "I", "O", "U", "L", "N", "R", "S", "T" }, twos = { "D", "G" },
+				threes = { "B", "C", "M", "P" }, fours = { "F", "H", "V", "W", "Y" }, fives = { "K" },
+				eights = { "J", "X" }, tens = { "Q", "Z" };
+		//average case O(26)
+		for (int i = 1; i < 11; i++) {
+			switch (i) {
+			case 1:
+				Arrays.stream(ones).forEach(l->scrabble.put(l,1));
+				break;
+			case 2:
+				Arrays.stream(twos).forEach(l->scrabble.put(l,2));
+				break;
+			case 3:
+				Arrays.stream(threes).forEach(l->scrabble.put(l,3));
+				break;
+			case 4:
+				Arrays.stream(fours).forEach(l->scrabble.put(l,4));
+				break;
+			case 5:
+				Arrays.stream(fives).forEach(l->scrabble.put(l,5));
+				break;
+			case 8:
+				Arrays.stream(eights).forEach(l->scrabble.put(l,8));
+				break;
+			case 10:
+				Arrays.stream(tens).forEach(l->scrabble.put(l,10));
+				break;
+			default:
+				continue;
+			}
+		}
 	}
 
 	/**
