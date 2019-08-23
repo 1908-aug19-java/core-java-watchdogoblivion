@@ -1,10 +1,21 @@
 package com.revature.eval.java.core;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+class Book {
+	String hu = "d";
+}
 
 public class EvaluationService {
 
@@ -15,6 +26,7 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	// O(n) time complexity
 	public String reverse(String string) {
 		String[] strings = string.split("");
 		String reversed = "";
@@ -32,6 +44,7 @@ public class EvaluationService {
 	 * @param phrase
 	 * @return
 	 */
+	// O(n) time complexity
 	public String acronym(String phrase) {
 		String[] strings = phrase.split(" |-");
 		String acronym = "";
@@ -50,6 +63,7 @@ public class EvaluationService {
 	 * different lengths.
 	 *
 	 */
+	// O(1) time complexity
 	static class Triangle {
 		private double sideOne;
 		private double sideTwo;
@@ -119,45 +133,48 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	// O(n) time complexity
 	public int getScrabbleScore(String string) {
 		String[] strings = string.split("");
 		Map<String, Integer> scrabble = new HashMap<String, Integer>();
 		setValues(scrabble);
 		int score = 0;
 		for (String s : strings) {
-			if(scrabble.get(s.toUpperCase()) != null) {score+=scrabble.get(s.toUpperCase());}
+			if (scrabble.get(s.toUpperCase()) != null) {
+				score += scrabble.get(s.toUpperCase());
+			}
 		}
 		return score;
 	}
 
 	// I created a separate method in case scores needed to change
+	// O(26) time complexity
 	private void setValues(Map<String, Integer> scrabble) {
 		String[] ones = { "A", "E", "I", "O", "U", "L", "N", "R", "S", "T" }, twos = { "D", "G" },
 				threes = { "B", "C", "M", "P" }, fours = { "F", "H", "V", "W", "Y" }, fives = { "K" },
 				eights = { "J", "X" }, tens = { "Q", "Z" };
-		//average case O(26)
 		for (int i = 1; i < 11; i++) {
 			switch (i) {
 			case 1:
-				Arrays.stream(ones).forEach(l->scrabble.put(l,1));
+				Arrays.stream(ones).forEach(l -> scrabble.put(l, 1));
 				break;
 			case 2:
-				Arrays.stream(twos).forEach(l->scrabble.put(l,2));
+				Arrays.stream(twos).forEach(l -> scrabble.put(l, 2));
 				break;
 			case 3:
-				Arrays.stream(threes).forEach(l->scrabble.put(l,3));
+				Arrays.stream(threes).forEach(l -> scrabble.put(l, 3));
 				break;
 			case 4:
-				Arrays.stream(fours).forEach(l->scrabble.put(l,4));
+				Arrays.stream(fours).forEach(l -> scrabble.put(l, 4));
 				break;
 			case 5:
-				Arrays.stream(fives).forEach(l->scrabble.put(l,5));
+				Arrays.stream(fives).forEach(l -> scrabble.put(l, 5));
 				break;
 			case 8:
-				Arrays.stream(eights).forEach(l->scrabble.put(l,8));
+				Arrays.stream(eights).forEach(l -> scrabble.put(l, 8));
 				break;
 			case 10:
-				Arrays.stream(tens).forEach(l->scrabble.put(l,10));
+				Arrays.stream(tens).forEach(l -> scrabble.put(l, 10));
 				break;
 			default:
 				continue;
@@ -196,9 +213,17 @@ public class EvaluationService {
 	 * Note: As this exercise only deals with telephone numbers used in
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
+	// O(n) complexity since replace runs at O(n) and is chained
 	public String cleanPhoneNumber(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		String regex = "(?=.*[a-zA-Z!@#$%^&*~<>])(?=.*[0-9]).*";
+		if (string.matches(regex)) {
+			throw new IllegalArgumentException();
+		}
+		String newString = string.replace(" ", "").replace(".", "").replace("(", "").replace(")", "").replace("-", "");
+		if (newString.length() > 11) {
+			throw new IllegalArgumentException();
+		}
+		return newString;
 	}
 
 	/**
@@ -210,9 +235,26 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+
+	// O(n) complexity
 	public Map<String, Integer> wordCount(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		String[] stringArray = string.split(" |,|\n");
+		Map<String, Integer> occurencesMap = new HashMap<String, Integer>();
+		Set<String> stringSet = new HashSet<>();
+		for (String s : stringArray) {
+			if (!s.isEmpty()) {
+				stringSet.add(s);
+			}
+		}
+		for (String s : stringSet) {
+			occurencesMap.put(s, 0);
+		}
+		for (String s : stringArray) {
+			if (!s.isEmpty()) {
+				occurencesMap.put(s, occurencesMap.get(s) + 1);
+			}
+		}
+		return occurencesMap;
 	}
 
 	/**
@@ -250,12 +292,26 @@ public class EvaluationService {
 	 * binary search is a dichotomic divide and conquer search algorithm.
 	 * 
 	 */
-	static class BinarySearch<T> {
+	// I extended comparable in case there are types other than numbers though that
+	// is not tested
+	// time complexity O(log(n))
+	static class BinarySearch<T extends Comparable<T>> {
 		private List<T> sortedList;
 
 		public int indexOf(T t) {
-			// TODO Write an implementation for this method declaration
-			return 0;
+			int result = recurse(t, (sortedList.size() - 1) / 2);
+			return result;
+		}
+
+		public int recurse(T value, int index) {
+			T half = sortedList.get(index);
+			if (value.compareTo(half) == 0) {
+				return index;
+			} else if (value.compareTo(half) > 0) {
+				return recurse(value, index + index / 2);
+			} else {
+				return recurse(value, index / 2);
+			}
 		}
 
 		public BinarySearch(List<T> sortedList) {
@@ -290,9 +346,37 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	// time complexity O(m*n) because of indox.of operation worst case O(n^2)
 	public String toPigLatin(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		String[] strings = string.split(" ");
+		Map<Integer, Integer> vowelPositionsMap = new HashMap<Integer, Integer>();
+		int startingIndex = 0;
+		int offset = 0;
+		for (int j = 0; j < strings.length; j++) {
+			int firstVowelIndex = Integer.MAX_VALUE;
+			String[] vowels = { "a", "e", "i", "o", "u" };
+			// complexity constant O(5)
+			for (String v : vowels) {
+				int vIndex = string.indexOf(v, startingIndex);
+				firstVowelIndex = vIndex < 0 ? firstVowelIndex : firstVowelIndex < vIndex ? firstVowelIndex : vIndex;
+			}
+			firstVowelIndex = firstVowelIndex == Integer.MAX_VALUE ? -1 : firstVowelIndex;
+			vowelPositionsMap.put(j, firstVowelIndex + offset);
+			startingIndex = string.indexOf(" ", firstVowelIndex) + 1;
+			offset = -startingIndex;
+		}
+		String result = "";
+		for (int i = 0; i < strings.length; i++) {
+			String current = strings[i];
+			if (current.substring(0, 2).equalsIgnoreCase("qu")) {
+				result += current.substring(2, current.length()) + current.substring(0, 2) + "ay ";
+			} else {
+				result += current.substring(vowelPositionsMap.get(i), current.length())
+						+ current.substring(0, vowelPositionsMap.get(i)) + "ay ";
+			}
+
+		}
+		return result.trim();
 	}
 
 	/**
@@ -310,9 +394,16 @@ public class EvaluationService {
 	 * @param input
 	 * @return
 	 */
+	// time complexity O(n)
 	public boolean isArmstrongNumber(int input) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		String inpString = new Integer(input).toString();
+		String[] strings = inpString.split("");
+		int[] integers = Arrays.stream(strings).mapToInt(a -> Integer.parseInt(a)).toArray();
+		int total = 0;
+		for (int i : integers) {
+			total += Math.pow(i, integers.length);
+		}
+		return total == input;
 	}
 
 	/**
@@ -325,9 +416,57 @@ public class EvaluationService {
 	 * @param l
 	 * @return
 	 */
+	// Terrible time complexity O(n^2)
+	// Might be better to run a parallel stream for checking primes since usage
+	// leads to bad complexity
 	public List<Long> calculatePrimeFactorsOf(long l) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		List<Long> numberPrimes = new ArrayList<Long>();
+		for (long i = 2; i <= l; i++) {
+			if (l % i == 0) {
+				if (isPrime(i) && i != 1) {
+					numberPrimes.add(i);
+				}
+			}
+		}
+		long lastNumber = numberPrimes.stream().reduce((a, b) -> a * b).get();
+		int repeated = 0;
+		long divided = l / lastNumber;
+		while (!isPrime(divided)) {
+			divided = divided / lastNumber;
+			repeated++;
+		}
+
+		for (int i = 0; i <= repeated; i++) {
+			if (divided > 1)
+				numberPrimes.add(divided);
+		}
+
+		Collections.sort(numberPrimes);
+		return numberPrimes;
+	}
+
+	// time complexity is O(n/4) -> O(n)
+	boolean isPrime(long n) {
+		// All possible divisors are n/2, but all evens are accounted by 2, half of that
+		// will be calculated so n/4
+		int m = (int) (n / 4) + 1;
+		// This takes into account all even numbers so that I can skip them
+		if (n % 2 == 0) {
+			return n == 2;
+		}
+		// 2 is the starting prime, but i already accounted for evens, I added this so
+		// that I could use i+=2 properly
+		// if i start at 3 in the loop it wont account for n=3 so I have to start higher
+		// and 4 is even, there is no point of starting
+		// at less that 2 since 2 is the first prime
+		if (n % 3 == 0) {
+			return n == 3;
+		}
+		for (int i = 5; i < m; i += 2) {
+			if (n % i == 0)
+				return false;
+		}
+		return true;
 	}
 
 	/**
@@ -356,6 +495,7 @@ public class EvaluationService {
 	 * gur ynml qbt. ROT13 Gur dhvpx oebja sbk whzcf bire gur ynml qbt. gives The
 	 * quick brown fox jumps over the lazy dog.
 	 */
+	// time complexity o(n)
 	static class RotationalCipher {
 		private int key;
 
@@ -365,8 +505,28 @@ public class EvaluationService {
 		}
 
 		public String rotate(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			String[] strings = string.split("");
+			int[] numericalLetters = Arrays.stream(strings).mapToInt(a -> a.charAt(0)).toArray();
+			for (int i = 0; i < numericalLetters.length; i++) {
+				if (numericalLetters[i] <= 122 && numericalLetters[i] >= 97) {
+					rotate(numericalLetters, i, 96);
+				} else if (numericalLetters[i] <= 90 && numericalLetters[i] >= 65) {
+					rotate(numericalLetters, i, 64);
+				}
+			}
+			return Arrays.stream(numericalLetters).boxed().map((Integer a) -> {
+				return (char) a.intValue();
+			}).map(b -> b.toString()).reduce("", (a, b) -> {
+				return a + b;
+			});
+		}
+
+		private void rotate(int[] numericalLetters, int i, int min) {
+			if ((numericalLetters[i] - min) + key > 26) {
+				numericalLetters[i] = (numericalLetters[i] - 26) + key;
+			} else {
+				numericalLetters[i] = numericalLetters[i] + key;
+			}
 		}
 
 	}
@@ -383,9 +543,39 @@ public class EvaluationService {
 	 * @param i
 	 * @return
 	 */
+	// time complexity O((n/4)*(n-167)) -> O(n^2) However test output is much better
+	// than original/standard loop due to isPrime running at n/4. nested loop ->
+	// 4-5s to 0.5-1s
 	public int calculateNthPrime(int i) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		if (i == 0) {
+			throw new IllegalArgumentException();
+		}
+		int[] primes = getPrimes();
+		int ithPrime = primes.length;
+		if (i <= ithPrime) {
+			return primes[i - 1];
+		}
+		int count = ithPrime;
+		for (int j = primes[ithPrime - 1] + 1;; j++) {
+			if (isPrime(j)) {
+				count++;
+			}
+			if (count == i) {
+				return j;
+			}
+		}
+	}
+
+	public int[] getPrimes() {
+		int[] primes = { 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97,
+				101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199,
+				211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331,
+				337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457,
+				461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599,
+				601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733,
+				739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877,
+				881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997 };
+		return primes;
 	}
 
 	/**
@@ -420,9 +610,34 @@ public class EvaluationService {
 		 * @param string
 		 * @return
 		 */
+		// O(n) time complexity
 		public static String encode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			String[] strings = string.split("");
+			int[] numericalLetters = Arrays.stream(strings).mapToInt(a -> a.charAt(0)).toArray();
+			for (int i = 0; i < numericalLetters.length; i++) {
+				if (numericalLetters[i] <= 122 && numericalLetters[i] >= 97) {
+					numericalLetters[i] = (122 - numericalLetters[i]) + 97;
+				} else if ((numericalLetters[i] <= 90 && numericalLetters[i] >= 65)) {
+					numericalLetters[i] = (90 - numericalLetters[i]) + 97;
+				}
+			}
+			String[] convertedStrings = Arrays.stream(numericalLetters).filter(a -> !(a == 32 | a == 46 | a == 44))
+					.boxed().map((Integer a) -> {
+						return (char) a.intValue();
+					}).map(b -> b.toString()).toArray(String[]::new);
+			int grouped = 1;
+			String result = "";
+			int length = convertedStrings.length;
+			for (int i = 0; i < length; i++) {
+				result += convertedStrings[i];
+				if (grouped % 5 == 0 && i != length - 1) {
+					result += " ";
+				}
+				if (!"".equals(convertedStrings[i].trim())) {
+					grouped++;
+				}
+			}
+			return result;
 		}
 
 		/**
@@ -431,9 +646,25 @@ public class EvaluationService {
 		 * @param string
 		 * @return
 		 */
+		// time complexity O(n)
 		public static String decode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			String[] strings = string.split("");
+			int[] numericalLetters = Arrays.stream(strings).mapToInt(a -> a.charAt(0)).toArray();
+			for (int i = 0; i < numericalLetters.length; i++) {
+				if (numericalLetters[i] <= 122 && numericalLetters[i] >= 97) {
+					numericalLetters[i] = (122 - numericalLetters[i]) + 97;
+				}
+			}
+			String[] convertedStrings = Arrays.stream(numericalLetters).filter(a -> a != 32).boxed()
+					.map((Integer a) -> {
+						return (char) a.intValue();
+					}).map(b -> b.toString()).toArray(String[]::new);
+			String result = "";
+			int length = convertedStrings.length;
+			for (int i = 0; i < length; i++) {
+				result += convertedStrings[i];
+			}
+			return result;
 		}
 	}
 
@@ -459,9 +690,31 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	// time complexity O(n)
 	public boolean isValidIsbn(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		String[] strings = string.replaceAll("-", "").split("");
+		int length = strings.length;
+		if (length < 10 || length > 10) {
+			return false;
+		}
+		int[] ints = new int[length];
+		for (int i = 0; i < length; i++) {
+			try {
+				if (strings[i].equalsIgnoreCase("x")) {
+					ints[i] = 10;
+				} else {
+					int number = Integer.parseInt(strings[i]);
+					ints[i] = number;
+				}
+			} catch (NumberFormatException ne) {
+				return false;
+			}
+		}
+		int result = 0;
+		for (int i = 0; i < length; i++) {
+			result += ints[i] * (length - i);
+		}
+		return result % 11 == 0;
 	}
 
 	/**
@@ -477,9 +730,28 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	// time complexity O(n)
 	public boolean isPangram(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		int alphabeticProduct = getLowerCaseAlphabet().values().stream().reduce((a, b) -> a * b).get();
+		int panagramProduct = 1;
+		String[] strings = string.split("");
+		Set<String> stringSet = new HashSet<String>();
+		for (String s : strings) {
+			if (!"".equals(s.trim()))
+				stringSet.add(s);
+		}
+		for (String s : stringSet) {
+			panagramProduct *= (int) s.charAt(0);
+		}
+		return panagramProduct % alphabeticProduct == 0;
+	}
+
+	Map<String, Integer> getLowerCaseAlphabet() {
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		for (int i = 97; i <= 122; i++) {
+			map.put(new Character((char) i).toString(), i);
+		}
+		return map;
 	}
 
 	/**
@@ -490,9 +762,14 @@ public class EvaluationService {
 	 * @param given
 	 * @return
 	 */
+	// time complexity I believe is O(1)
 	public Temporal getGigasecondDate(Temporal given) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		if (given instanceof LocalDate) {
+			LocalDateTime givenConverted = LocalDateTime.of(((LocalDate) given).getYear(),
+					((LocalDate) given).getMonth(), ((LocalDate) given).getDayOfMonth(), 0, 0, 0);
+			return givenConverted.plus(1_000_000_000L, ChronoUnit.SECONDS);
+		}
+		return given.plus(1_000_000_000L, ChronoUnit.SECONDS);
 	}
 
 	/**
@@ -508,9 +785,17 @@ public class EvaluationService {
 	 * @param set
 	 * @return
 	 */
-	public int getSumOfMultiples(int i, int[] set) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+	// time complexity O(n^2)
+	public int getSumOfMultiples(int j, int[] set) {
+		Set<Integer> integers = new HashSet<Integer>();
+		for (int i : set) {
+			for (int k = 0; k < j; k++) {
+				if (k % i == 0) {
+					integers.add(k);
+				}
+			}
+		}
+		return integers.stream().mapToInt(a -> a).sum();
 	}
 
 	/**
@@ -549,9 +834,27 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+	// time complexity O(n)
 	public boolean isLuhnValid(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		String[] strings = string.replaceAll(" ", "").split("");
+		int length = strings.length;
+		int[] integers = new int[length];
+
+		for (int i = 0; i < length; i++) {
+			try {
+				int number = Integer.parseInt(strings[i]);
+				if ((i + 1) % 2 == 0) {
+					number = number * 2;
+					if (number > 9) {
+						number = number - 9;
+					}
+				}
+				integers[i] = number;
+			} catch (NumberFormatException e) {
+				return false;
+			}
+		}
+		return Arrays.stream(integers).sum() % 10 == 0;
 	}
 
 	/**
@@ -582,8 +885,41 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int solveWordProblem(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		int firstNumberIndex = string.indexOf("s") + 2;
+		int spaceIndex = string.indexOf(" ", firstNumberIndex);
+		int firstNumber = Integer.parseInt(string.substring(firstNumberIndex, spaceIndex));
+
+		int spaceIndex2 = string.indexOf(" ", spaceIndex + 1);
+		String operation = string.substring(spaceIndex + 1, spaceIndex2);
+
+		int result = -1, lastSpaceIndex, secondNumber;
+
+		if (operation.equals("plus") || operation.equals("minus")) {
+			lastSpaceIndex = string.indexOf(" ", spaceIndex2);
+			secondNumber = Integer.parseInt(string.substring(lastSpaceIndex + 1, string.length() - 1));
+			switch (operation) {
+			case "plus":
+				result = firstNumber + secondNumber;
+				break;
+			case "minus":
+				result = firstNumber - secondNumber;
+				break;
+
+			}
+		} else {
+			lastSpaceIndex = string.indexOf(" ", string.indexOf(" ", spaceIndex2) + 1);
+			secondNumber = Integer.parseInt(string.substring(lastSpaceIndex + 1, string.length() - 1));
+			switch (operation) {
+			case "multiplied":
+				result = firstNumber * secondNumber;
+				break;
+			case "divided":
+				result = firstNumber / secondNumber;
+				break;
+
+			}
+		}
+		return result;
 	}
 
 }
